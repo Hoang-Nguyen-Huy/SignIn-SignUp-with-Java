@@ -1,9 +1,5 @@
+import java.io.*;
 import java.util.Scanner;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 
 public class Main {
@@ -36,9 +32,9 @@ public class Main {
         System.out.println("                 [3]. Exit                      ");
         System.out.println("------------------------------------------------");
         System.out.print("  Your option is: ");
-    }
+    }           // menu nguoi dung
 
-    public static boolean IsExistsInFile (String stringChecker) {           // kiem tra email da bi trung trong file hay chua
+    public static boolean IsExistsInFile (String stringChecker) {
         try {
             FileReader fileReader = new FileReader("manager.txt");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -55,51 +51,90 @@ public class Main {
             System.out.println("Error: " + e.getMessage());
         }
         return false;
-    }
+    }   // kiem tra email da bi trung trong file hay chua
     public static void SignUp() {
+        Scanner scanner = new Scanner(System.in);
+        User user = new User();
         String NickName;
         String Email;
         String Password;
 
-        Scanner scanner = new Scanner(System.in);
-        User user1 = new User();
+        int IsValidNickName = 0;
+        while (IsValidNickName == 0) {
+            System.out.print(" Enter your nick name: ");
+            NickName = scanner.nextLine();
+            user.setNickName(NickName);
+            if (IsExistsInFile(NickName) == true) {
+                System.out.println(" Error: This nick name has been used!!!");
+                IsValidNickName = 0;
+            } else {
+                try {
+                    FileWriter fileWriter = new FileWriter("manager.txt", true);
+                    BufferedWriter  bufferedWriter = new BufferedWriter(fileWriter);
 
-        System.out.print(" Enter your nick name: ");
-        NickName = scanner.nextLine();
-        user1.setNickName(NickName);
+                    bufferedWriter.write(NickName + ", ");
 
-        // nhap email nguoi dung
-        System.out.print(" Enter your email: ");
-        Email = scanner.nextLine();
-        user1.setEmail(Email);      // nhap email cua nguoi dung
-        while (IsExistsInFile(Email) == true) {
-            System.out.println(" Error: This email has been used!!!");
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    System.out.println(" Error: " + e.getMessage());
+                }
+                IsValidNickName = 1;
+            }
+        }
+
+        int IsValidEmail = 0;
+        while (IsValidEmail == 0) {
             System.out.print(" Enter your email: ");
             Email = scanner.nextLine();
-            user1.setEmail(Email);
-        }
-        while (Email.length() <= 0 || Email.length() >= 25) {
-            System.out.println(" Error: Please enter the valid email!!!");
-            System.out.print(" Enter your email: ");
-            Email = scanner.nextLine();
-            user1.setEmail(Email);
-        }
-        // end
+            user.setEmail(Email);
+            if (IsExistsInFile(Email) == true) {
+                System.out.println(" Error: This email has been used!!!");
+                IsValidEmail = 0;
+            } else {
+                try {
+                    FileWriter fileWriter = new FileWriter("manager.txt", true);
+                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-        System.out.print(" Enter your password: ");
-        Password = scanner.nextLine();
-        user1.setPassword(Password);
+                    bufferedWriter.write(Email + ", ");
 
-        try {
-            FileWriter file = new FileWriter("manager.txt");
-            file.write("Nick name: " + NickName + "."  + "   ");
-            file.write("Email: " + Email + "." + "   ");
-            file.write("Password: " + Password + "." +  "   ");
-            file.close();
-            System.out.println("                 SIGN UP Successfully!!!             ");
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    System.out.println(" Error: " + e.getMessage());
+                }
+                IsValidEmail = 1;
+            }
         }
+
+        int IsValidPassword = 0;
+        while (IsValidPassword == 0) {
+            System.out.print(" Enter your password: ");
+            Password = scanner.nextLine();
+            user.setPassword(Password);
+            if (Password.length() <= 0) {
+                System.out.println(" Error: Please enter your password!!!");
+                IsValidPassword = 0;
+            }
+            if (Password.length() > 0 && Password.length() < 10) {
+                System.out.println(" Error: Please create password that has more than 10 characters");
+                IsValidPassword = 0;
+            }
+            if (Password.length() >= 10) {
+                try {
+                    FileWriter fileWriter = new FileWriter("manager.txt", true);
+                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                    bufferedWriter.write(Password + ". ");
+                    bufferedWriter.newLine();
+
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    System.out.println(" Error: " + e.getMessage());
+                }
+                IsValidPassword = 1;
+            }
+        }
+
+        System.out.println("                           SIGN UP SUCCESSFULLY                    ");
 
     }
 }
