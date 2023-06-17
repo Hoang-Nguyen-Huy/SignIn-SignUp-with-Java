@@ -58,6 +58,7 @@ public class Main {
         String NickName;
         String Email;
         String Password;
+        String Phone;
 
         int IsValidNickName = 0;
         while (IsValidNickName == 0) {
@@ -66,6 +67,9 @@ public class Main {
             user.setNickName(NickName);
             if (IsExistsInFile(NickName) == true) {
                 System.out.println(" Error: This nick name has been used!!!");
+                IsValidNickName = 0;
+            } else if (NickName.contains(" ")) {
+                System.out.println(" Error: This nick name is not valid!!!");
                 IsValidNickName = 0;
             } else {
                 try {
@@ -87,6 +91,7 @@ public class Main {
             System.out.print(" Enter your email: ");
             Email = scanner.nextLine();
             user.setEmail(Email);
+
             if (IsExistsInFile(Email) == true) {
                 System.out.println(" Error: This email has been used!!!");
                 IsValidEmail = 0;
@@ -102,6 +107,35 @@ public class Main {
                     System.out.println(" Error: " + e.getMessage());
                 }
                 IsValidEmail = 1;
+            }
+        }
+
+        int IsValidPhone = 0;
+        while (IsValidPhone == 0) {
+            System.out.print(" Enter your phone: ");
+            Phone = scanner.nextLine();
+            user.setPhone(Phone);
+            if (IsExistsInFile(Phone) == true) {
+                System.out.println(" Error: This phone has been used!!!");
+                IsValidPhone = 0;
+            } else if (Phone.length() <= 0) {
+                System.out.println(" Error: Please enter your phone number!!!");
+                IsValidPhone = 0;
+            } else if (Phone.length() > 11) {
+                System.out.println(" Error: The phone number can't have more than 11 numbers");
+                IsValidPhone = 0;
+            } else {
+                try {
+                    FileWriter fileWriter = new FileWriter("manager.txt", true);
+                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                    bufferedWriter.write(Phone + ", ");
+
+                    bufferedWriter.close();
+                } catch (IOException e) {
+                    System.out.println(" Error: " + e.getMessage());
+                }
+                IsValidPhone = 1;
             }
         }
 
@@ -136,5 +170,9 @@ public class Main {
 
         System.out.println("                           SIGN UP SUCCESSFULLY                    ");
 
+    }   // dang ki tao tai khoan
+
+    public static void SignIn() {
+        
     }
 }
