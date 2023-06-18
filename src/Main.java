@@ -1,11 +1,16 @@
+/*
+Nguyen Huy Hoang
+Demo project BE1 clb F-Code
+Started day: 12/06/2023
+Completed day: 18/06/2023
+*/
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
-
-
 
 public class Main {
     private static final String USER_FILE = "manager.txt";
@@ -204,17 +209,39 @@ public class Main {
         return false;
     }   // kiem tra nick name va password co dung hay khong
 
+    public static boolean IsFileEmpty (String filename) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line = reader.readLine();
+            reader.close();
+            return line == null;
+        } catch (IOException e) {
+            System.out.println(" Error: " + e.getMessage());
+            return false;
+        }
+    }   // kiem tra file co rong hay khong
     public static void SignIn () {
         Scanner scanner = new Scanner(System.in);
         User user = new User();
         String username;
         String password;
+
+        boolean isEmpty = IsFileEmpty("manager.txt");
+        if (isEmpty) {
+            System.out.println(" You don't have any account.!!!");
+            System.out.println(" Please create your own account.!!!");
+            return;
+        }
         int IsSignIn = 0;
         while (IsSignIn == 0) {
-
                 System.out.print(" Enter your username: ");         // nhap user name
                 username = scanner.nextLine();
                 user.setNickName(username);
+                if (IsExistsInFile(username) == false) {
+                    System.out.println(" You don't have any account!!!");
+                    System.out.println(" Please create your own account!!!");
+                    return;
+                }
                 while (username.contains(" ")) {
                     System.out.println(" Error: This nick name is not valid!!!");
                     System.out.print(" Enter your username: ");
