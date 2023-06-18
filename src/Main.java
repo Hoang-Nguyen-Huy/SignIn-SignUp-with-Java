@@ -1,5 +1,10 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+
 
 
 public class Main {
@@ -13,6 +18,7 @@ public class Main {
             switch(Option) {
                 case 1:
                     System.out.println("-------------------------SIGN IN--------------------------");
+                    SignIn();
                     break;
                 case 2:
                     System.out.println("-------------------------SIGN UP--------------------------");
@@ -157,7 +163,7 @@ public class Main {
                     FileWriter fileWriter = new FileWriter("manager.txt", true);
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-                    bufferedWriter.write(Password + ". ");
+                    bufferedWriter.write(Password + " ");
                     bufferedWriter.newLine();
 
                     bufferedWriter.close();
@@ -172,7 +178,75 @@ public class Main {
 
     }   // dang ki tao tai khoan
 
-    public static void SignIn() {
-        
-    }
+    public static boolean login(String username, String password) {
+        try {
+            FileReader fileReader = new FileReader("manager.txt");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] userInfo = line.split(", ");
+
+                String storedUsername = userInfo[0];
+                String storedPassword = userInfo[3];
+
+                if (storedUsername.trim().equals(username) && storedPassword.trim().equals(password)) {
+                    bufferedReader.close();
+                    return true;
+                }
+            }
+
+            bufferedReader.close();
+        } catch (IOException e) {
+            System.out.println("Lỗi: " + e.getMessage());
+        }
+
+        return false;
+    }   // kiem tra nick name va password co dung hay khong
+
+    public static void SignIn () {
+        Scanner scanner = new Scanner(System.in);
+        User user = new User();
+        String username;
+        String password;
+        int IsSignIn = 0;
+        while (IsSignIn == 0) {
+
+                System.out.print(" Enter your username: ");         // nhap user name
+                username = scanner.nextLine();
+                user.setNickName(username);
+                while (username.contains(" ")) {
+                    System.out.println(" Error: This nick name is not valid!!!");
+                    System.out.print(" Enter your username: ");
+                    username = scanner.nextLine();
+                    user.setNickName(username);
+                }
+                while(username.length() <= 0) {
+                    System.out.println(" Error: Please enter your nick name!!!");
+                    System.out.print(" Enter your username: ");
+                    username = scanner.nextLine();
+                    user.setNickName(username);
+                }
+
+
+                System.out.print(" Enter your password: ");
+                password = scanner.nextLine();
+                user.setPassword(password);
+
+                while (password.length() <= 0) {
+                    System.out.println(" Error: Please enter the your password!!!");
+                    System.out.print(" Enter your password: ");
+                    password = scanner.nextLine();
+                    user.setPassword(password);
+                }
+
+            if (login(username, password)) {            // kiem tra username va password
+                System.out.println(" Sign in successfully!!");
+                IsSignIn = 1;
+            } else {
+                System.out.println(" Check your user name and password again !!!!");
+                IsSignIn = 0;
+            }
+        }
+    }    // dang nhap
 }
